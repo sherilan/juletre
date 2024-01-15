@@ -17,7 +17,7 @@ The system consists of an Arduino-based server that drives the LEDs, and a Pytho
 The server is provided in its entirety in the [esp32_tcp.ino](server/esp32_tcp.ino) Arduino sketch file.
 It turns the Arduino into a wifi access point that another computer can connect directly to. 
 It is also possible to connect it to an existing wifi network (which is way more convenient). Still, I found the direct access point approach to help maximize data throughput compared to joining our (not so great) home wifi network.
-I also experimented with Bluethooth-based connections (both classic and BLE). It works alright for smaller setups (UP to 100 LEDs), but I could find a way to make it reliable for 400 LEDs @ 60FPS. 
+I also experimented with Bluethooth-based connections (both classic and BLE). It works alright for smaller setups (UP to 100 LEDs), but I could not find a way to make it reliable for 400 LEDs @ 60FPS. 
 
 After setting up the access point, the esp32 sets up a simple TCP server on the wifi connection and initiates two concurrent tasks:
 
