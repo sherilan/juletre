@@ -4,8 +4,7 @@
 #include <Adafruit_NeoPixel.h>
 
 #define PIN_NEO_PIXEL 2  // The ESP32 pin GPIO16 connected to NeoPixel
-#define NUM_PIXELS 400     // The number of LEDs (pixels) on NeoPixel LED 
-strip
+#define NUM_PIXELS 400     // The number of LEDs (pixels) on NeoPixel LED strip
 #define BUFFER_SIZE 30 // Should be >= 2
 #define FPS 60 // 30 //60
 
@@ -74,14 +73,11 @@ unsigned long last_request_time_ms = 0;
 char IDLE_STATE[NUM_PIXELS];
 
 // Initialize LEDs
-Adafruit_NeoPixel neo_pixels(NUM_PIXELS, PIN_NEO_PIXEL, NEO_RGB + 
-NEO_KHZ800);
+Adafruit_NeoPixel neo_pixels(NUM_PIXELS, PIN_NEO_PIXEL, NEO_RGB + NEO_KHZ800);
 
 
-// const char* ssid = "Telenor9336her_EXT";     // Replace with your Wi-Fi 
-SSID
-// const char* password = "Ikast8Antikvere7Nukleonet3"; // Replace with 
-your Wi-Fi password
+// const char* ssid = "";     // Replace with your Wi-Fi SSID
+// const char* password = ""; // Replace with your Wi-Fi password
 
 const char* ssid = "JuletreESP";
 const char* password = "godjul";
@@ -148,8 +144,7 @@ void setup() {
   //   illuminate
   //   ,  "Task 0" // A name just for humans
   //   ,  2048          // The stack size
-  //   ,  (void*)&task_number0 // Pass reference to a variable describing 
-the task number
+  //   ,  (void*)&task_number0 // Pass reference to a variable describing the task number
   //   //,  5  // High priority
   //   ,  1  // priority
   //   ,  NULL // Task handle is not used here - simply pass NULL
@@ -165,8 +160,7 @@ the task number
   Serial.printf("Server nodelay: %i\n", server.getNoDelay());
   Serial.print("Arduhal loglevel: "); Serial.println(ARDUHAL_LOG_LEVEL);
   Serial.print("Setup on core: "); Serial.println(xPortGetCoreID());
-  Serial.print("Refresh rate: "); Serial.print(FPS); Serial.println(" 
-Hz.");
+  Serial.print("Refresh rate: "); Serial.print(FPS); Serial.println(" Hz.");
 
   
   xTaskCreatePinnedToCore(
@@ -186,16 +180,14 @@ Hz.");
     NULL,  /* Task input parameter */
     5,  /* Priority of the task (5=HIGH) */
     NULL, // &Task1,  /* Task handle. */
-    1  /* Core where the task should run (NOTE: setup/loop runs at 1 by 
-default) */
+    1  /* Core where the task should run (NOTE: setup/loop runs at 1 by default) */
   );
   Serial.println("Started tasks!");
 
 
 }
 
-bool awaitClientData(WiFiClient &client, uint patience_us = 1000000, uint 
-sleep_us = 10)
+bool awaitClientData(WiFiClient &client, uint patience_us = 1000000, uint sleep_us = 10)
 {
   for (int i = 0; i < patience_us / sleep_us; i++)
   {
@@ -214,8 +206,7 @@ sleep_us = 10)
   return false;
 }
 
-bool readBytes(WiFiClient &client, uint8_t *buf, size_t len, uint 
-patience_us = 1000000, uint sleep_us = 10)
+bool readBytes(WiFiClient &client, uint8_t *buf, size_t len, uint patience_us = 1000000, uint sleep_us = 10)
 {
   for (int i = 0; i < patience_us / sleep_us; i++)
   {
@@ -246,11 +237,9 @@ patience_us = 1000000, uint sleep_us = 10)
 }
 
 template <typename T>
-bool read(WiFiClient &client, T &data, uint patience_us = 1000000, uint 
-sleep_us = 10)
+bool read(WiFiClient &client, T &data, uint patience_us = 1000000, uint sleep_us = 10)
 {
-  return readBytes(client, (uint8_t *)&data, sizeof(T), patience_us, 
-sleep_us);
+  return readBytes(client, (uint8_t *)&data, sizeof(T), patience_us, sleep_us);
 }
 
 
@@ -290,15 +279,12 @@ bool parse_led_message(WiFiClient &client, LEDBuffer &buffer)
       {
         buffer.colors[pixel] = color;
         buffer.updated[pixel] = true;
-        // NeoPixel.setPixelColor(pixel, NeoPixel.Color(color.r, color.g, 
-color.b));
+        // NeoPixel.setPixelColor(pixel, NeoPixel.Color(color.r, color.g, color.b));
       }
-      // Serial.printf("%i) Setting pixel %i to {%i %i %i}\n", i, pos, 
-color.r, color.g, color.b);
+      // Serial.printf("%i) Setting pixel %i to {%i %i %i}\n", i, pos, color.r, color.g, color.b);
     }
 
-    // Serial.printf("Successfully set dense colors for frame %i!\n", 
-FRAME);
+    // Serial.printf("Successfully set dense colors for frame %i!\n", FRAME);
     // client.println("Thanks for the bytes!");
   }
   else
@@ -320,10 +306,8 @@ void loop()
 }
 void communicate(void *pvParameters)
 {
-  Serial.print("Communicate running on core: "); 
-Serial.println(xPortGetCoreID());
-  if (buffers[global_buffer_index].acquireLock(1000 / portTICK_PERIOD_MS)) 
-{
+  Serial.print("Communicate running on core: "); Serial.println(xPortGetCoreID());
+  if (buffers[global_buffer_index].acquireLock(1000 / portTICK_PERIOD_MS)) {
     Serial.println("Grabbed the first semaphore");
   } else {
     Serial.println("Failed to grab the first semaphore :(");
@@ -362,8 +346,7 @@ void communicate_loop() {
       buffers[next_buffer_index].acquireLock();
 
       // Parse next frame and write to current buffer 
-      bool success = parse_led_message(client, 
-buffers[global_buffer_index]);
+      bool success = parse_led_message(client, buffers[global_buffer_index]);
       FRAME++;
 
       // Release lock for current buffer index and advance index 
@@ -381,8 +364,7 @@ buffers[global_buffer_index]);
       diff = diff < 0 ? BUFFER_SIZE + diff : diff;
       unsigned long t1 = millis();
       unsigned long el = t1 - t0;
-      Serial.printf("Finished frame in %i ms. Current diff: %i  
-avail=%i\n", el, diff, client.available());
+      Serial.printf("Finished frame in %i ms. Current diff: %i  avail=%i\n", el, diff, client.available());
 
       
     }
@@ -404,8 +386,7 @@ avail=%i\n", el, diff, client.available());
     if (
       last_request_time_ms == 0 || // On startup
       now - last_request_time_ms > 5000 ||  // After 5 sec delay 
-      last_request_time_ms > now // Wraparound (~50 days I think, but just 
-in case)
+      last_request_time_ms > now // Wraparound (~50 days I think, but just in case)
     )
     {
       idle();
@@ -426,8 +407,7 @@ int set_led_colors(const LEDBuffer &buffer) {
 }
 
 void illuminate(void *pvParameters) {
-  Serial.print("Illuminate running on core: "); 
-Serial.println(xPortGetCoreID());
+  Serial.print("Illuminate running on core: "); Serial.println(xPortGetCoreID());
   local_buffer_index = 0;
   buffers[local_buffer_index].acquireLock();
   unsigned long dt_target_ms = 1000 / FPS;
@@ -457,8 +437,7 @@ Serial.println(xPortGetCoreID());
     unsigned long t1_ms = millis();
     unsigned long dt_ms = t1_ms - t0_ms;
     Serial.printf("Updated %i LEDs in %i ms\n", num_set, dt_ms);
-    if (dt_ms >= 0 and dt_ms < dt_target_ms) { delay(dt_target_ms - 
-dt_ms); }
+    if (dt_ms >= 0 and dt_ms < dt_target_ms) { delay(dt_target_ms - dt_ms); }
   }
 }
 
