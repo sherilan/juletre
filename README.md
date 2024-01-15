@@ -10,7 +10,7 @@ Note2: There are better libraries for controlling LEDs with an Arduino over wifi
 
 ## Overview
 
-The system consists of an Arduino-based server that drives the LEDs, and a Python client for sending them. I used an ESP32 board for the server, individually addressable WS2812 LEDs with the Neopixel arduino library, and a laptop to run the client.
+The system consists of an Arduino-based server that drives the LEDs, and a Python client for sending commands over wifi. I used an ESP32 board for the server, individually addressable WS2812 LEDs with the Neopixel arduino library, and a laptop to run the client.
 
 ### Server 
 
@@ -80,7 +80,7 @@ Since I captured all the pictures in a dark room, this step is trivial and essen
 To project 3D rays from each camera image, we need to know where the cameras are located in 3D space.
 Defining the camera pose from the first set of images as the origin of the (arbitrary) world frame, this boils down to finding the relative transform from the first camera pose to all the other camera poses.
 In theory, this transform can be estimated from just the pictures (by estimating [the essential matrix](https://en.wikipedia.org/wiki/Essential_matrix) from our known correspondences).
-However, in practice, I found this approach to be too brittle and sensitive to noisy measurements.
+In practice, I found this approach to be too brittle and sensitive to noisy measurements (at least with the code I wrote).
 Instead, I cheated a bit and simply calculated the camera poses by hand. 
 As mentioned, the camera was located in a fixed pose relative to the tree (approx. 3 meters away and 1 meter up looking straight at the tree). 
 Each 90-degree clockwise rotation of the tree around its vertical axis therefore corresponded to a 90-degree counter-clockwise orbit of the camera which can be calculated with straightforward trigonometry. 
